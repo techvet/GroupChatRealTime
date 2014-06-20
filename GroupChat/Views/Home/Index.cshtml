@@ -1,0 +1,15 @@
+﻿@model GroupChat.Models.HomeViewModel
+@{
+    ViewBag.Title = "Chat Rooms";
+}
+
+<h2>title</h2>
+
+<table>
+    @foreach (var room in Model.RoomsList)
+    {
+        <tr>
+            <td>@room</td>
+        </tr>
+    }
+</table>
