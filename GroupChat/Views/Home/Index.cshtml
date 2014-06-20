@@ -3,13 +3,13 @@
     ViewBag.Title = "Chat Rooms";
 }
 
-<h2>title</h2>
+<h2>@ViewBag.Title</h2>
 
 <table>
     @foreach (var room in Model.RoomsList)
     {
         <tr>
-            <td>@room</td>
+            <td><a>@room</a></td>
         </tr>
     }
 </table>
