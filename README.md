@@ -1,4 +1,0 @@
-GroupChatRealTime
-=================
-
-GroupChat SignalR
