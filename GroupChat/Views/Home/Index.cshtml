@@ -5,11 +5,113 @@
 
 <h2>@ViewBag.Title</h2>
 
-<table>
+<style type="text/css">
+        .container {
+            background-color: #99CCFF;
+            border: thick solid #808080;
+            padding: 20px;
+            margin: 20px;
+        }
+    </style>
+
+<table id="chatRooms">
     @foreach (var room in Model.RoomsList)
     {
         <tr>
-            <td><a>@room</a></td>
+            <td><a href="#" id="link_@room">@room</a></td>
         </tr>
     }
 </table>
+
+<div class="container">
+        <input type="text" id="message" />
+        <input type="button" id="sendmessage" value="Send" />
+        <input type="hidden" id="displayname" />
+        <ul id="discussion">
+        </ul>
+    </div>
+
+<script>
+    $('#chatRooms a').click(function() {
+        var contents = $(this).text();
+        alert(contents);
+        $('#discussion').empty();
+    });
+    
+    $(function () {
+        var hub = $.connection.chatHub;
+
+        hub.client.broadCastMessage = function (name, message) {
+            var encodedName = $('<div />').text(name).html();
+            var encodedMsg = $('<div />').text(message).html();
+
+            $('#discussion').append('<li><strong>' + encodedName
+                + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+        };
+
+        $('#displayname').val(prompt('Enter your name:', ''));
+
+        $('#message').focus();
+        // Start the connection.
+        $.connection.hub.start().done(function () {
+            $('#sendmessage').click(function () {
+                // Call the Send method on the hub. 
+                hub.server.send($('#displayname').val(), $('#message').val());
+                // Clear text box and reset focus for next comment. 
+                $('#message').val('').focus();
+            });
+        });
+    });
+</script>
+
+@*<head>
+    <title>SignalR Simple Chat</title>
+    <style type="text/css">
+        .container {
+            background-color: #99CCFF;
+            border: thick solid #808080;
+            padding: 20px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" id="message" />
+        <input type="button" id="sendmessage" value="Send" />
+        <input type="hidden" id="displayname" />
+        <ul id="discussion">
+        </ul>
+    </div>
+
+
+    <script src="Scripts/jquery-2.1.0.min.js"></script>
+    <script src="Scripts/jquery.signalR-2.0.3.js"></script>
+    <script src="signalr/hubs"></script>
+
+    <script>
+        $(function () {
+            var hub = $.connection.chatHub;
+
+            hub.client.broadCastMessage = function (name, message) {
+                var encodedName = $('<div />').text(name).html();
+                var encodedMsg = $('<div />').text(message).html();
+
+                $('#discussion').append('<li><strong>' + encodedName
+                    + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
+            };
+
+            $('#displayname').val(prompt('Enter your name:', ''));
+
+            $('#message').focus();
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                $('#sendmessage').click(function () {
+                    // Call the Send method on the hub. 
+                    hub.server.send($('#displayname').val(), $('#message').val());
+                    // Clear text box and reset focus for next comment. 
+                    $('#message').val('').focus();
+                });
+            });
+        });
+    </script>*@
