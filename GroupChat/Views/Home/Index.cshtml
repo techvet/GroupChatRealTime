@@ -4,6 +4,8 @@
 }
 
 <h2>@ViewBag.Title</h2>
+<h3>Current Room: </h3>
+<h3 id="currentRoom"></h3>
 
 <style type="text/css">
         .container {
@@ -31,13 +33,7 @@
         </ul>
     </div>
 
-<script>
-    $('#chatRooms a').click(function() {
-        var contents = $(this).text();
-        alert(contents);
-        $('#discussion').empty();
-    });
-    
+<script>    
     $(function () {
         var hub = $.connection.chatHub;
 
@@ -52,11 +48,20 @@
         $('#displayname').val(prompt('Enter your name:', ''));
 
         $('#message').focus();
+        
+        $('#chatRooms a').click(function () {
+            var contents = $(this).text();
+            hub.server.leaveRoom($('#currentRoom').text());
+            $('#currentRoom').html(contents);
+            $('#discussion').empty();
+            hub.server.joinRoom($('#displayname').val(), contents);
+        });
+        
         // Start the connection.
         $.connection.hub.start().done(function () {
             $('#sendmessage').click(function () {
                 // Call the Send method on the hub. 
-                hub.server.send($('#displayname').val(), $('#message').val());
+                hub.server.send($('#displayname').val(), $('#message').val(), $('#currentRoom').text());
                 // Clear text box and reset focus for next comment. 
                 $('#message').val('').focus();
             });
